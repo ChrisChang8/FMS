@@ -2,7 +2,7 @@
 
 FMS is a local Python project for building a realistic, deterministic U.S. stock market data simulator. The project will eventually generate simulated prices, quotes, ticks, volume, volatility, candles, and real-time streams that another application can consume.
 
-This repository has completed **Phase 3: Simulation Clock** from [Docs/DATA_ROADMAP.md](Docs/DATA_ROADMAP.md).
+This repository has completed **Phase 4: Price Simulation Engine** from [Docs/DATA_ROADMAP.md](Docs/DATA_ROADMAP.md).
 
 ## Implemented Scope
 
@@ -32,7 +32,15 @@ Phase 3 adds the simulation clock:
 - Regular market session checks from 8:30 AM to 3:00 PM Central Time
 - Consistent `America/Chicago` timezone handling
 
-The project does **not** yet implement price movement, tick generation, candle aggregation, streaming, storage, trading, portfolios, brokerage behavior, or real-money functionality.
+Phase 4 adds the price simulation engine:
+
+- Seeded deterministic stock price generation
+- A geometric Brownian motion price model using previous price, drift, volatility, random noise, and elapsed time
+- Positive price protection with six-decimal money precision
+- Per-symbol sequence numbers for generated price points
+- A default local universe of 10 simulated U.S. stocks
+
+The project does **not** yet implement market behavior controls, bid/ask quote generation, volume generation, tick generation, candle aggregation, streaming, storage, trading, portfolios, brokerage behavior, or real-money functionality.
 
 ## Project Structure
 
@@ -42,13 +50,14 @@ app/
     core/         Configuration and logging
     models/       Pydantic market data models
     services/     Future application services
-    simulation/   Simulation clock and future engines
+    simulation/   Simulation clock and price engine
     storage/      Future storage and replay support
     streaming/    Future real-time streaming support
 
 tests/            Automated tests
 Docs/             Roadmap and project documentation
 Docs/Phases/      Phase-specific implementation notes
+notebooks/        Optional VS Code/Jupyter notebooks for visualizing simulator output
 ```
 
 Detailed phase notes are available in:
@@ -56,6 +65,13 @@ Detailed phase notes are available in:
 - [Docs/Phases/phase-1-project-foundation.md](Docs/Phases/phase-1-project-foundation.md)
 - [Docs/Phases/phase-2-market-data-models.md](Docs/Phases/phase-2-market-data-models.md)
 - [Docs/Phases/phase-3-simulation-clock.md](Docs/Phases/phase-3-simulation-clock.md)
+- [Docs/Phases/phase-4-price-simulation-engine.md](Docs/Phases/phase-4-price-simulation-engine.md)
+
+## Notebooks
+
+The [notebooks](notebooks/) folder contains optional VS Code/Jupyter notebooks for visually inspecting simulator output. These notebooks are not part of the FastAPI application; they are local exploration tools for checking whether generated data looks reasonable.
+
+Notebook-specific instructions live in [notebooks/NOTEBOOKS.md](notebooks/NOTEBOOKS.md).
 
 ## Setup
 
@@ -154,3 +170,17 @@ A **simulation clock** is a clock controlled by the simulator. It lets tests and
 **America/Chicago** is the timezone used for simulated market timestamps.
 
 The **regular trading session** is the part of the day treated as normal market hours. In Phase 3, that is `8:30 AM` through just before `3:00 PM` Central Time.
+
+A **price simulation engine** is the part of the simulator that decides the next trade price for each stock.
+
+**Drift** is the small long-term directional tendency in the price model.
+
+**Volatility** means how jumpy the price is. Higher volatility generally creates larger simulated movements.
+
+**Random market noise** is the unpredictable part of the model. It looks random, but a seed lets tests replay it exactly.
+
+A **seed** is a starting value for the random number generator. Same seed plus same inputs means the same simulated price path.
+
+**Geometric Brownian motion** is a simple stock-like movement model. It changes prices by proportional moves rather than by adding a fixed random amount.
+
+A **price point** is one generated price at one simulated timestamp. It is not a full market tick yet because Phase 4 does not include bid, ask, spread, size, or volume.

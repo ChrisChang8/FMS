@@ -13,7 +13,7 @@ This repository contains the foundation for FMS, a local Python/FastAPI U.S. sto
 - `app/api/` - API route modules. Phase 1 includes only the health endpoint.
 - `app/core/` - Core application infrastructure such as typed settings and structured logging.
 - `app/models/` - Core Pydantic market data models for stocks, quotes, ticks, candles, and market state.
-- `app/simulation/` - Simulation clock utilities and placeholder package for future simulation engines.
+- `app/simulation/` - Simulation clock utilities and the Phase 4 price simulation engine.
 - `app/services/` - Placeholder package for future service-layer code.
 - `app/streaming/` - Placeholder package for future WebSocket and streaming code.
 - `app/storage/` - Placeholder package for future storage and replay code.
@@ -59,7 +59,19 @@ Phase 3 is implemented:
 - Simulation clock tests cover deterministic progression and session boundaries.
 - Detailed Phase 3 notes live in `Docs/Phases/phase-3-simulation-clock.md`.
 
-Do not begin Phase 4 unless the user explicitly asks for Phase 4.
+Phase 4 is implemented:
+
+- `app.simulation.PriceSimulationEngine` generates seeded deterministic stock price movement.
+- `PriceSimulationConfig` defines seed, drift, and minimum positive price.
+- `PricePoint` represents one generated trade-price observation without quote or volume data.
+- The engine uses a geometric Brownian motion model based on previous price, drift, volatility, random market noise, and elapsed time.
+- Prices are kept positive and rounded to six decimal places.
+- Per-symbol sequence numbers are tracked for generated price points.
+- `DEFAULT_SIMULATED_STOCKS` provides a local 10-stock simulation universe.
+- Price engine tests cover deterministic replay, different seed behavior, positive prices, reset behavior, and 10-stock support.
+- Detailed Phase 4 notes live in `Docs/Phases/phase-4-price-simulation-engine.md`.
+
+Do not begin Phase 5 unless the user explicitly asks for Phase 5.
 
 ## Common Commands
 
