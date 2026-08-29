@@ -2,11 +2,11 @@
 
 FMS is a local Python project for building a realistic, deterministic U.S. stock market data simulator. The project will eventually generate simulated prices, quotes, ticks, volume, volatility, candles, and real-time streams that another application can consume.
 
-This repository is currently on **Phase 1: Project Foundation** from [Docs/DATA_ROADMAP.md](Docs/DATA_ROADMAP.md).
+This repository has completed **Phase 2: Market Data Models** from [Docs/DATA_ROADMAP.md](Docs/DATA_ROADMAP.md).
 
-## Phase 1 Scope
+## Implemented Scope
 
-Phase 1 creates only the application foundation:
+Phase 1 created the application foundation:
 
 - Python project configuration
 - FastAPI application startup
@@ -16,7 +16,15 @@ Phase 1 creates only the application foundation:
 - pytest test setup
 - Placeholder package structure for future phases
 
-Phase 1 does **not** implement stock models, market ticks, candles, simulation clocks, price movement, streaming, storage, trading, portfolios, brokerage behavior, or real-money functionality.
+Phase 2 adds the core market data models:
+
+- `Stock` for simulated stock reference data
+- `Quote` for bid and ask snapshots
+- `MarketTick` for raw market updates
+- `Candle` for OHLCV market data
+- `MarketState` for behavior inputs such as trend, volatility, liquidity, and momentum
+
+The project does **not** yet implement simulation clocks, price movement, tick generation, candle aggregation, streaming, storage, trading, portfolios, brokerage behavior, or real-money functionality.
 
 ## Project Structure
 
@@ -24,7 +32,7 @@ Phase 1 does **not** implement stock models, market ticks, candles, simulation c
 app/
     api/          FastAPI route modules
     core/         Configuration and logging
-    models/       Future market data models
+    models/       Pydantic market data models
     services/     Future application services
     simulation/   Future simulation engines
     storage/      Future storage and replay support
@@ -32,7 +40,13 @@ app/
 
 tests/            Automated tests
 Docs/             Roadmap and project documentation
+Docs/Phases/      Phase-specific implementation notes
 ```
+
+Detailed phase notes are available in:
+
+- [Docs/Phases/phase-1-project-foundation.md](Docs/Phases/phase-1-project-foundation.md)
+- [Docs/Phases/phase-2-market-data-models.md](Docs/Phases/phase-2-market-data-models.md)
 
 ## Setup
 
@@ -79,6 +93,12 @@ Expected response:
 python -m pytest
 ```
 
+If you are using the local virtual environment in this checkout:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest
+```
+
 ## Configuration
 
 Settings are loaded through typed Pydantic settings with the `FMS_` environment variable prefix.
@@ -97,6 +117,16 @@ python -m uvicorn app.main:app --reload
 ```
 
 ## Important Concepts
+
+A **stock model** describes one simulated company, such as its ticker symbol, starting price, sector, normal trading volume, and baseline volatility.
+
+A **quote** is the current best simulated buying price and selling price. The bid is what a buyer is willing to pay, and the ask is what a seller is willing to accept. The bid must stay below the ask.
+
+A **market tick** is one raw market update. It contains a trade price, bid, ask, sizes, volume, timestamp, and sequence number.
+
+A **candle** summarizes trades over an interval. OHLCV means open, high, low, close, and volume.
+
+A **market state** describes the simulated behavior being applied to a stock, such as whether it is trending up or down, how volatile it is, how liquid it is, and how much momentum it has.
 
 A **health endpoint** is a simple API route that confirms the application can start and respond to requests.
 

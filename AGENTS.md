@@ -6,12 +6,13 @@ This repository contains the foundation for FMS, a local Python/FastAPI U.S. sto
 
 - `README.md` - Public-facing project overview, setup, run, and test instructions.
 - `Docs/DATA_ROADMAP.md` - Phase-by-phase market data simulator roadmap and constraints.
+- `Docs/Phases/` - Phase-specific implementation notes. Each completed phase should have one file named like `phase-N-short-title.md`.
 - `AGENTS.md` - Agent-facing navigation and maintenance notes.
 - `pyproject.toml` - Python project metadata, dependencies, and pytest configuration.
 - `app/main.py` - FastAPI app factory and application instance.
 - `app/api/` - API route modules. Phase 1 includes only the health endpoint.
 - `app/core/` - Core application infrastructure such as typed settings and structured logging.
-- `app/models/` - Placeholder package for future market data models. Do not add Phase 2 models before Phase 2 starts.
+- `app/models/` - Core Pydantic market data models for stocks, quotes, ticks, candles, and market state.
 - `app/simulation/` - Placeholder package for future simulation engines.
 - `app/services/` - Placeholder package for future service-layer code.
 - `app/streaming/` - Placeholder package for future WebSocket and streaming code.
@@ -36,8 +37,19 @@ Phase 1 is implemented:
 - Typed settings use the `FMS_` environment variable prefix.
 - Structured JSON-style logging is configured during app creation.
 - pytest is configured and includes a health endpoint test.
+- Detailed Phase 1 notes live in `Docs/Phases/phase-1-project-foundation.md`.
 
-Do not begin Phase 2 unless the user explicitly asks for Phase 2.
+Phase 2 is implemented:
+
+- `app.models.Stock` defines simulated stock reference data.
+- `app.models.Quote` defines bid/ask snapshots and validates `bid < ask`.
+- `app.models.MarketTick` defines raw market updates and validates internal price consistency.
+- `app.models.Candle` defines OHLCV candles and validates high/low boundaries.
+- `app.models.MarketState` defines current behavior inputs such as trend, volatility, liquidity, and momentum.
+- Model tests cover important validation rules.
+- Detailed Phase 2 notes live in `Docs/Phases/phase-2-market-data-models.md`.
+
+Do not begin Phase 3 unless the user explicitly asks for Phase 3.
 
 ## Common Commands
 
@@ -94,6 +106,8 @@ At the end of each phase:
 - Explain how to run and test the phase
 - Explain important technical concepts simply
 - Document important assumptions or design decisions
+- Create or update a phase-specific note in `Docs/Phases/` named like `phase-N-short-title.md`
+- Link the phase-specific note from `README.md` and `AGENTS.md` when it is relevant to the current project status
 - Do not automatically begin the next phase
 
 ## Core Principle
