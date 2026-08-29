@@ -2,7 +2,7 @@
 
 FMS is a local Python project for building a realistic, deterministic U.S. stock market data simulator. The project will eventually generate simulated prices, quotes, ticks, volume, volatility, candles, and real-time streams that another application can consume.
 
-This repository has completed **Phase 2: Market Data Models** from [Docs/DATA_ROADMAP.md](Docs/DATA_ROADMAP.md).
+This repository has completed **Phase 3: Simulation Clock** from [Docs/DATA_ROADMAP.md](Docs/DATA_ROADMAP.md).
 
 ## Implemented Scope
 
@@ -24,7 +24,15 @@ Phase 2 adds the core market data models:
 - `Candle` for OHLCV market data
 - `MarketState` for behavior inputs such as trend, volatility, liquidity, and momentum
 
-The project does **not** yet implement simulation clocks, price movement, tick generation, candle aggregation, streaming, storage, trading, portfolios, brokerage behavior, or real-money functionality.
+Phase 3 adds the simulation clock:
+
+- Deterministic simulated market time
+- Configurable start time and speed
+- Pause, resume, reset, and manual time advancement
+- Regular market session checks from 8:30 AM to 3:00 PM Central Time
+- Consistent `America/Chicago` timezone handling
+
+The project does **not** yet implement price movement, tick generation, candle aggregation, streaming, storage, trading, portfolios, brokerage behavior, or real-money functionality.
 
 ## Project Structure
 
@@ -34,7 +42,7 @@ app/
     core/         Configuration and logging
     models/       Pydantic market data models
     services/     Future application services
-    simulation/   Future simulation engines
+    simulation/   Simulation clock and future engines
     storage/      Future storage and replay support
     streaming/    Future real-time streaming support
 
@@ -47,6 +55,7 @@ Detailed phase notes are available in:
 
 - [Docs/Phases/phase-1-project-foundation.md](Docs/Phases/phase-1-project-foundation.md)
 - [Docs/Phases/phase-2-market-data-models.md](Docs/Phases/phase-2-market-data-models.md)
+- [Docs/Phases/phase-3-simulation-clock.md](Docs/Phases/phase-3-simulation-clock.md)
 
 ## Setup
 
@@ -135,3 +144,13 @@ A **health endpoint** is a simple API route that confirms the application can st
 **Structured logging** writes logs in a consistent machine-readable shape, making later debugging and monitoring easier.
 
 **Deterministic tests** are tests that should return the same result every time they run.
+
+A **simulation clock** is a clock controlled by the simulator. It lets tests and future simulation engines move market time forward without relying on the exact time on your computer.
+
+**Simulated time** is the time inside the market simulation. It can move faster than real time, pause, resume, or jump forward during tests.
+
+**Simulation speed** controls how fast simulated time moves. A speed of `1.0` means one simulated second per real second. A speed of `2.0` means two simulated seconds per real second.
+
+**America/Chicago** is the timezone used for simulated market timestamps.
+
+The **regular trading session** is the part of the day treated as normal market hours. In Phase 3, that is `8:30 AM` through just before `3:00 PM` Central Time.

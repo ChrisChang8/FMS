@@ -13,11 +13,11 @@ This repository contains the foundation for FMS, a local Python/FastAPI U.S. sto
 - `app/api/` - API route modules. Phase 1 includes only the health endpoint.
 - `app/core/` - Core application infrastructure such as typed settings and structured logging.
 - `app/models/` - Core Pydantic market data models for stocks, quotes, ticks, candles, and market state.
-- `app/simulation/` - Placeholder package for future simulation engines.
+- `app/simulation/` - Simulation clock utilities and placeholder package for future simulation engines.
 - `app/services/` - Placeholder package for future service-layer code.
 - `app/streaming/` - Placeholder package for future WebSocket and streaming code.
 - `app/storage/` - Placeholder package for future storage and replay code.
-- `tests/` - pytest suite. Phase 1 covers the health endpoint.
+- `tests/` - pytest suite covering the health endpoint, market data models, and simulation clock.
 
 ## How To Work Here
 
@@ -49,7 +49,17 @@ Phase 2 is implemented:
 - Model tests cover important validation rules.
 - Detailed Phase 2 notes live in `Docs/Phases/phase-2-market-data-models.md`.
 
-Do not begin Phase 3 unless the user explicitly asks for Phase 3.
+Phase 3 is implemented:
+
+- `app.simulation.SimulationClock` tracks simulated market time.
+- `SimulationClockConfig` defines start time and simulation speed.
+- Clock timestamps are normalized to `America/Chicago`.
+- Regular market hours are treated as 8:30 AM to 3:00 PM Central Time.
+- Pause, resume, reset, speed changes, and manual advancement are supported.
+- Simulation clock tests cover deterministic progression and session boundaries.
+- Detailed Phase 3 notes live in `Docs/Phases/phase-3-simulation-clock.md`.
+
+Do not begin Phase 4 unless the user explicitly asks for Phase 4.
 
 ## Common Commands
 

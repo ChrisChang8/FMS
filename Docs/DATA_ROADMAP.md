@@ -175,25 +175,29 @@ The simulator should not depend directly on the computer clock.
 
 Support:
 
-- Current simulated time
-- Start time
-- Pause
-- Resume
-- Reset
-- Simulation speed
-- Deterministic progression
+* Current simulated time
+* Start time
+* Pause
+* Resume
+* Reset
+* Simulation speed
+* Deterministic progression
 
-Use U.S. Eastern Time where appropriate.
+Use U.S. Central Time (`America/Chicago`) for all simulated market timestamps.
 
-Initially support regular U.S. trading hours:
+Initially support regular U.S. stock market hours converted to Chicago time:
 
-- 9:30 AM to 4:00 PM Eastern
+* 8:30 AM to 3:00 PM Central Time
+
+The simulator should treat these hours as the active regular trading session.
 
 Success criteria:
 
-- Tests can advance time predictably
-- Reset behaves correctly
-- Same configuration produces the same timeline
+* Tests can advance time predictably
+* Pause and resume behave correctly
+* Reset returns the simulation to the configured start time
+* Same configuration produces the same timeline
+* All timestamps use the `America/Chicago` timezone consistently
 
 ---
 
