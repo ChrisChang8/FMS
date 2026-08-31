@@ -15,6 +15,31 @@ What it does:
 - Renders an inline SVG chart through VS Code's Jupyter notebook renderer.
 - Shows a summary table with each symbol's starting price, ending price, and percent change.
 
+### `behavior_visualization.ipynb`
+
+Visualizes the Phase 5 market behavior engine trends and effects.
+
+What it does:
+
+- **Section 1-2**: Sets up imports and simulation parameters (AAPL stock, 4-hour timeline, 1-minute steps)
+- **Section 3**: Creates configurations for all 10 behavior types (Normal, Uptrend, Downtrend, Sideways, Momentum, Mean Reversion, Breakout, Breakdown, Consolidation, Volatility Spike)
+- **Section 4**: Computes drift and volatility adjustments over time for each behavior
+- **Section 5**: **Visualizes drift and volatility curves** showing how each behavior modifies these parameters
+- **Section 6**: Runs price simulations with behavior-adjusted drift values
+- **Section 7**: **Compares Monte Carlo-averaged price paths** across all behaviors (60 runs per behavior, strength=0.9) so the true drift direction is visible above the random noise, grouped by category (trend, volatility, momentum, neutral)
+- **Section 8**: **Analyzes strength sensitivity** by sweeping strength values (0.2, 0.5, 0.8, 1.0) for key behaviors
+- **Section 9**: **Demonstrates concurrent behaviors** (Uptrend + Volatility Spike) with Monte Carlo-averaged price paths, shaded active-behavior windows, and a drift-adjustment panel
+
+Key visualizations:
+
+1. **Drift/Volatility Curves** - Shows how each behavior adjusts parameters from base values
+2. **Mean Price Paths** - Monte Carlo-averaged simulated prices per behavior category, making each behavior's true directional trend clearly visible
+3. **Strength Sensitivity** - Scatter plots showing how behavior intensity (strength 0.2-1.0) affects adjustments
+4. **Concurrent Behaviors** - Shows combined vs. isolated behavior effects on both price and drift, with shaded windows marking when each behavior is active
+5. **Summary Metrics** - Final return, max drawdown, and realized volatility for each behavior
+
+All outputs are deterministic and reproducible with the same seeds. Monte Carlo averaging is used specifically in Sections 7 and 9 because a single noisy price path can hide small drift differences between behaviors.
+
 ## Recommended Setup
 
 From the repository root:
