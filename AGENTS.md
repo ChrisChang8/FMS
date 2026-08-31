@@ -13,7 +13,7 @@ This repository contains the foundation for FMS, a local Python/FastAPI U.S. sto
 - `app/api/` - API route modules. Phase 1 includes only the health endpoint.
 - `app/core/` - Core application infrastructure such as typed settings and structured logging.
 - `app/models/` - Core Pydantic market data models for stocks, quotes, ticks, candles, and market state.
-- `app/simulation/` - Simulation clock utilities and the Phase 4 price simulation engine.
+- `app/simulation/` - Simulation clock utilities, price simulation engine, and market behavior engine.
 - `app/services/` - Placeholder package for future service-layer code.
 - `app/streaming/` - Placeholder package for future WebSocket and streaming code.
 - `app/storage/` - Placeholder package for future storage and replay code.
@@ -71,7 +71,19 @@ Phase 4 is implemented:
 - Price engine tests cover deterministic replay, different seed behavior, positive prices, reset behavior, and 10-stock support.
 - Detailed Phase 4 notes live in `Docs/Phases/phase-4-price-simulation-engine.md`.
 
-Do not begin Phase 5 unless the user explicitly asks for Phase 5.
+Phase 5 is implemented:
+
+- `app.simulation.behaviors` provides 10 controllable market behaviors.
+- `MarketBehavior` abstract base class and 10 concrete subclasses (Normal, Uptrend, Downtrend, Sideways, Momentum, Mean Reversion, Breakout, Breakdown, Consolidation, Volatility Spike).
+- `BehaviorType` enum defines the 10 behavior types.
+- `MarketBehaviorConfig` Pydantic model for configuration with duration and strength validation.
+- `MarketBehaviorEngine` tracks and applies behaviors to multiple stocks simultaneously.
+- `create_behavior()` factory function instantiates behaviors from configuration.
+- Behaviors adjust drift and volatility independently without modifying the price engine.
+- Full behavior test coverage (37 tests) integrated with existing 29 tests (66 total passing).
+- Detailed Phase 5 notes live in `Docs/Phases/phase-5-market-behavior-engine.md`.
+
+Do not begin Phase 6 unless the user explicitly asks for Phase 6.
 
 ## Common Commands
 

@@ -2,7 +2,7 @@
 
 FMS is a local Python project for building a realistic, deterministic U.S. stock market data simulator. The project will eventually generate simulated prices, quotes, ticks, volume, volatility, candles, and real-time streams that another application can consume.
 
-This repository has completed **Phase 4: Price Simulation Engine** from [Docs/DATA_ROADMAP.md](Docs/DATA_ROADMAP.md).
+This repository has completed **Phase 5: Market Behavior Engine** from [Docs/DATA_ROADMAP.md](Docs/DATA_ROADMAP.md).
 
 ## Implemented Scope
 
@@ -40,7 +40,16 @@ Phase 4 adds the price simulation engine:
 - Per-symbol sequence numbers for generated price points
 - A default local universe of 10 simulated U.S. stocks
 
-The project does **not** yet implement market behavior controls, bid/ask quote generation, volume generation, tick generation, candle aggregation, streaming, storage, trading, portfolios, brokerage behavior, or real-money functionality.
+Phase 5 adds the market behavior engine:
+
+- 10 controllable market behaviors (normal, uptrend, downtrend, sideways, momentum, mean reversion, breakout, breakdown, consolidation, volatility spike)
+- Modular behavior architecture that adjusts drift and volatility independently
+- Configuration-based behavior creation and application
+- Behavior lifecycle management (start, end, active tracking)
+- Support for multiple simultaneous behaviors per stock
+- Full integration with Phase 4 price engine
+
+The project does **not** yet implement bid/ask quote generation, volume generation, tick generation, candle aggregation, streaming, storage, trading, portfolios, brokerage behavior, or real-money functionality.
 
 ## Project Structure
 
@@ -66,6 +75,7 @@ Detailed phase notes are available in:
 - [Docs/Phases/phase-2-market-data-models.md](Docs/Phases/phase-2-market-data-models.md)
 - [Docs/Phases/phase-3-simulation-clock.md](Docs/Phases/phase-3-simulation-clock.md)
 - [Docs/Phases/phase-4-price-simulation-engine.md](Docs/Phases/phase-4-price-simulation-engine.md)
+- [Docs/Phases/phase-5-market-behavior-engine.md](Docs/Phases/phase-5-market-behavior-engine.md)
 
 ## Notebooks
 
