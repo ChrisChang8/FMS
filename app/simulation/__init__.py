@@ -38,6 +38,7 @@ from app.simulation.price_engine import (
     PriceSimulationEngine,
 )
 from app.simulation.quotes import QuotePoint, QuoteSimulationConfig, QuoteSimulationEngine
+from app.simulation.ticks import TickSimulationConfig, TickSimulationEngine
 
 __all__ = [
     "ActivityPoint",
@@ -69,6 +70,8 @@ __all__ = [
     "SimulationClock",
     "SimulationClockConfig",
     "StockActivityConfig",
+    "TickSimulationConfig",
+    "TickSimulationEngine",
     "UptrendBehavior",
     "VolatilitySpikeBehavior",
     "create_behavior",

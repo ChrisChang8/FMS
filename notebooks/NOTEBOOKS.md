@@ -40,6 +40,22 @@ Key visualizations:
 
 All outputs are deterministic and reproducible with the same seeds. Monte Carlo averaging is used specifically in Sections 7 and 9 because a single noisy price path can hide small drift differences between behaviors.
 
+### `tick_pipeline_visualization.ipynb`
+
+Visualizes the integrated Phase 8 market-tick pipeline using the real `TickSimulationEngine`.
+
+What it compares:
+
+- Baseline, uptrend, downtrend, and volatility-spike behaviors
+- Low, medium, and high liquidity
+- Indexed trade-price paths from the price engine
+- Quote spreads in basis points from the quote engine
+- Trade volume from the activity engine
+- Combined bid and ask size as top-of-book depth
+- Complete validated `MarketTick` examples
+
+The notebook averages 30 deterministic runs for each scenario. This keeps the seeded comparison reproducible while making drift and volatility effects easier to distinguish from a single random price path.
+
 ## Recommended Setup
 
 From the repository root:

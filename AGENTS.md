@@ -14,9 +14,10 @@ This repository contains the foundation for FMS, a local Python/FastAPI U.S. sto
 - `app/api/` - API route modules. Phase 1 includes only the health endpoint.
 - `app/core/` - Core application infrastructure such as typed settings and structured logging.
 - `app/models/` - Core Pydantic market data models for stocks, quotes, ticks, candles, and market state.
-- `app/simulation/` - Simulation clock, price, behavior, activity, and quote engines.
+- `app/simulation/` - Simulation clock, price, behavior, activity, quote, and tick engines.
 - `app/simulation/activity.py` - Deterministic per-stock volume and liquidity generation.
 - `app/simulation/quotes.py` - Deterministic bid, ask, and spread generation.
+- `app/simulation/ticks.py` - Deterministic composition of complete raw market ticks.
 - `app/services/` - Placeholder package for future service-layer code.
 - `app/streaming/` - Placeholder package for future WebSocket and streaming code.
 - `app/storage/` - Placeholder package for future storage and replay code.
@@ -105,9 +106,19 @@ Phase 7 is implemented:
 - `QuotePoint` intentionally excludes quote sizes, tick assembly, and order-book depth.
 - Detailed Phase 7 notes live in `Docs/Phases/phase-7-bid-ask-and-spread.md`.
 
+Phase 8 is implemented:
+
+- `TickSimulationEngine` composes behavior, price, activity, quote, and quote-size generation into validated `MarketTick` records.
+- Active behaviors adjust drift and volatility; liquidity then scales volatility before price and quote generation.
+- The default 10-stock universe can be generated as one ordered stream.
+- Timestamps remain nondecreasing and one global sequence number orders ticks across symbols.
+- Trade prices remain within the generated bid and ask, and all sizes and trade volumes are positive.
+- A master seed and full reset reproduce the complete tick stream.
+- Detailed Phase 8 notes live in `Docs/Phases/phase-8-tick-generation.md`.
+
 A PostgreSQL schema for simulation sessions, stocks, market states, behaviors, quotes, ticks, and candles has been added under `migrations/` ahead of Phase 12, at the user's explicit request. The application does not yet connect to this schema (no `app/storage` wiring); it is schema scaffolding only.
 
-Do not begin Phase 8 unless the user explicitly asks for Phase 8.
+Do not begin Phase 9 unless the user explicitly asks for Phase 9.
 
 ## Common Commands
 

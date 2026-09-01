@@ -2,7 +2,7 @@
 
 FMS is a local Python project for building a realistic, deterministic U.S. stock market data simulator. The project will eventually generate simulated prices, quotes, ticks, volume, volatility, candles, and real-time streams that another application can consume.
 
-This repository has completed **Phase 7: Bid, Ask, and Spread** from [Docs/DATA_ROADMAP.md](Docs/DATA_ROADMAP.md).
+This repository has completed **Phase 8: Tick Generation** from [Docs/DATA_ROADMAP.md](Docs/DATA_ROADMAP.md).
 
 ## Implemented Scope
 
@@ -65,7 +65,17 @@ Phase 7 adds top-of-book quote simulation:
 - Configurable base spread, tick size, volatility sensitivity, and spread variation
 - Tick-aligned quote prices without an order book or quote sizes
 
-The project does **not** yet implement quote sizes, tick generation, candle aggregation, streaming, application storage wiring, trading, portfolios, brokerage behavior, or real-money functionality.
+Phase 8 adds continuous raw tick generation:
+
+- Composition of behavior, price, activity, quote, and seeded quote-size generation into validated `MarketTick` records
+- Active behaviors adjust price drift and volatility before liquidity scaling, with final volatility also influencing quote spreads
+- Support for the full default 10-stock universe
+- Nondecreasing timestamps and globally increasing sequence numbers across the combined stream
+- Internally consistent trade prices, bids, asks, sizes, and trade volumes
+- Complete deterministic replay from the same seed and inputs
+- Reset support for every component random stream and ordering state
+
+The project does **not** yet implement candle aggregation, APIs for market data, WebSocket streaming, application storage wiring, trading, portfolios, brokerage behavior, or real-money functionality.
 
 ## Project Structure
 
@@ -75,7 +85,7 @@ app/
     core/         Configuration and logging
     models/       Pydantic market data models
     services/     Future application services
-    simulation/   Simulation clock and price engine
+    simulation/   Clock, behavior, price, activity, quote, and tick engines
     storage/      Future storage and replay support
     streaming/    Future real-time streaming support
 
@@ -99,10 +109,13 @@ Detailed phase notes are available in:
 - [Docs/Phases/phase-5-market-behavior-engine.md](Docs/Phases/phase-5-market-behavior-engine.md)
 - [Docs/Phases/phase-6-volume-and-liquidity.md](Docs/Phases/phase-6-volume-and-liquidity.md)
 - [Docs/Phases/phase-7-bid-ask-and-spread.md](Docs/Phases/phase-7-bid-ask-and-spread.md)
+- [Docs/Phases/phase-8-tick-generation.md](Docs/Phases/phase-8-tick-generation.md)
 
 ## Notebooks
 
 The [notebooks](notebooks/) folder contains optional VS Code/Jupyter notebooks for visually inspecting simulator output. These notebooks are not part of the FastAPI application; they are local exploration tools for checking whether generated data looks reasonable.
+
+The Phase 8 [tick pipeline notebook](notebooks/tick_pipeline_visualization.ipynb) compares behavior, liquidity, volatility, price, activity, spreads, quote sizes, and complete ticks under controlled same-seed scenarios.
 
 Notebook-specific instructions live in [notebooks/NOTEBOOKS.md](notebooks/NOTEBOOKS.md).
 
@@ -231,3 +244,11 @@ A **basis point** is one hundredth of one percent. Phase 7 uses basis points to 
 A **tick size** is the smallest allowed price increment. Phase 7 defaults to one cent and rounds bids down and asks up so the quote remains valid.
 
 A **quote point** is one Phase 7 top-of-book observation containing the symbol, timestamp, bid, ask, and calculated spread. It does not include sizes or a full order book.
+
+A **tick stream** is the ordered sequence of raw trade updates produced across all simulated stocks. Phase 8 combines the earlier engines into complete, validated `MarketTick` records.
+
+A **global sequence number** identifies the exact order of ticks across every symbol. Unlike a per-symbol counter, it makes the order unambiguous when updates for multiple stocks share the same timestamp.
+
+**Quote sizes** are the simulated numbers of shares available at the best bid and ask. Phase 8 generates positive, seeded sizes whose expected level increases with liquidity; it still does not simulate a full order book.
+
+In the Phase 8 pipeline, an active **market behavior** first adjusts drift and volatility. Liquidity then scales that volatility, the price engine generates the trade price, and the quote engine uses the resulting price and volatility. This keeps behavior, activity, price, and quotes connected without circular dependencies.
