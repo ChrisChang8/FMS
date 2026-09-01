@@ -1,5 +1,11 @@
 """Market simulation utilities."""
 
+from app.simulation.activity import (
+    ActivityPoint,
+    ActivitySimulationConfig,
+    MarketActivityEngine,
+    StockActivityConfig,
+)
 from app.simulation.behaviors import (
     BehaviorType,
     BreakdownBehavior,
@@ -33,6 +39,8 @@ from app.simulation.price_engine import (
 )
 
 __all__ = [
+    "ActivityPoint",
+    "ActivitySimulationConfig",
     "BehaviorType",
     "BreakdownBehavior",
     "BreakoutBehavior",
@@ -41,6 +49,7 @@ __all__ = [
     "DowntrendBehavior",
     "MARKET_TIMEZONE",
     "MARKET_TIMEZONE_NAME",
+    "MarketActivityEngine",
     "MarketBehavior",
     "MarketBehaviorConfig",
     "MarketBehaviorEngine",
@@ -55,6 +64,7 @@ __all__ = [
     "SidewaysBehavior",
     "SimulationClock",
     "SimulationClockConfig",
+    "StockActivityConfig",
     "UptrendBehavior",
     "VolatilitySpikeBehavior",
     "create_behavior",

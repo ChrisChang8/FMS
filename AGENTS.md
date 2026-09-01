@@ -15,6 +15,7 @@ This repository contains the foundation for FMS, a local Python/FastAPI U.S. sto
 - `app/core/` - Core application infrastructure such as typed settings and structured logging.
 - `app/models/` - Core Pydantic market data models for stocks, quotes, ticks, candles, and market state.
 - `app/simulation/` - Simulation clock utilities, price simulation engine, and market behavior engine.
+- `app/simulation/activity.py` - Deterministic per-stock volume and liquidity generation.
 - `app/services/` - Placeholder package for future service-layer code.
 - `app/streaming/` - Placeholder package for future WebSocket and streaming code.
 - `app/storage/` - Placeholder package for future storage and replay code.
@@ -84,9 +85,19 @@ Phase 5 is implemented:
 - Full behavior test coverage (37 tests) integrated with existing 29 tests (66 total passing).
 - Detailed Phase 5 notes live in `Docs/Phases/phase-5-market-behavior-engine.md`.
 
+Phase 6 is implemented:
+
+- `MarketActivityEngine` generates deterministic interval share volume.
+- `StockActivityConfig` provides per-symbol liquidity and volume controls.
+- Volume is based on each stock's average daily volume, elapsed time, liquidity, and a configurable multiplier.
+- Higher liquidity produces more volume and a lower price-volatility multiplier for smoother pricing.
+- Activity points have per-symbol sequence numbers and reset reproducibly from the configured seed.
+- Phase 6 does not generate bid, ask, or spread data.
+- Detailed Phase 6 notes live in `Docs/Phases/phase-6-volume-and-liquidity.md`.
+
 A PostgreSQL schema for simulation sessions, stocks, market states, behaviors, quotes, ticks, and candles has been added under `migrations/` ahead of Phase 12, at the user's explicit request. The application does not yet connect to this schema (no `app/storage` wiring); it is schema scaffolding only.
 
-Do not begin Phase 6 unless the user explicitly asks for Phase 6.
+Do not begin Phase 7 unless the user explicitly asks for Phase 7.
 
 ## Common Commands
 

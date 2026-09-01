@@ -2,7 +2,7 @@
 
 FMS is a local Python project for building a realistic, deterministic U.S. stock market data simulator. The project will eventually generate simulated prices, quotes, ticks, volume, volatility, candles, and real-time streams that another application can consume.
 
-This repository has completed **Phase 5: Market Behavior Engine** from [Docs/DATA_ROADMAP.md](Docs/DATA_ROADMAP.md).
+This repository has completed **Phase 6: Volume and Liquidity** from [Docs/DATA_ROADMAP.md](Docs/DATA_ROADMAP.md).
 
 ## Implemented Scope
 
@@ -49,7 +49,15 @@ Phase 5 adds the market behavior engine:
 - Support for multiple simultaneous behaviors per stock
 - Full integration with Phase 4 price engine
 
-The project does **not** yet implement bid/ask quote generation, volume generation, tick generation, candle aggregation, streaming, storage, trading, portfolios, brokerage behavior, or real-money functionality.
+Phase 6 adds volume and liquidity simulation:
+
+- Seeded, deterministic share-volume generation based on each stock's average daily volume
+- Per-stock liquidity and volume-multiplier configuration
+- Higher volume for more liquid stocks and lower volume for less liquid stocks
+- A liquidity-derived volatility multiplier for smoother high-liquidity pricing and more irregular low-liquidity pricing
+- Per-symbol activity sequence numbers and deterministic reset support
+
+The project does **not** yet implement bid/ask quote generation, tick generation, candle aggregation, streaming, storage, trading, portfolios, brokerage behavior, or real-money functionality.
 
 ## Project Structure
 
@@ -81,6 +89,7 @@ Detailed phase notes are available in:
 - [Docs/Phases/phase-3-simulation-clock.md](Docs/Phases/phase-3-simulation-clock.md)
 - [Docs/Phases/phase-4-price-simulation-engine.md](Docs/Phases/phase-4-price-simulation-engine.md)
 - [Docs/Phases/phase-5-market-behavior-engine.md](Docs/Phases/phase-5-market-behavior-engine.md)
+- [Docs/Phases/phase-6-volume-and-liquidity.md](Docs/Phases/phase-6-volume-and-liquidity.md)
 
 ## Notebooks
 
@@ -199,3 +208,9 @@ A **seed** is a starting value for the random number generator. Same seed plus s
 **Geometric Brownian motion** is a simple stock-like movement model. It changes prices by proportional moves rather than by adding a fixed random amount.
 
 A **price point** is one generated price at one simulated timestamp. It is not a full market tick yet because Phase 4 does not include bid, ask, spread, size, or volume.
+
+**Volume** is the number of shares simulated as traded during an elapsed interval. Phase 6 derives its expected level from the stock's average daily volume and then uses seeded Poisson sampling to create realistic count variation.
+
+**Liquidity** describes how active and easy to trade a simulated stock is. It is configured from `0.0` to `1.0`; higher values generate more volume and a smaller price-volatility multiplier.
+
+An **activity point** is one Phase 6 observation containing interval volume, liquidity, a price-volatility multiplier, a timestamp, and a per-symbol sequence number. It intentionally does not contain bid, ask, or spread data.
