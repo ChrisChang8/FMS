@@ -37,6 +37,7 @@ from app.simulation.price_engine import (
     PriceSimulationConfig,
     PriceSimulationEngine,
 )
+from app.simulation.quotes import QuotePoint, QuoteSimulationConfig, QuoteSimulationEngine
 
 __all__ = [
     "ActivityPoint",
@@ -59,6 +60,9 @@ __all__ = [
     "PricePoint",
     "PriceSimulationConfig",
     "PriceSimulationEngine",
+    "QuotePoint",
+    "QuoteSimulationConfig",
+    "QuoteSimulationEngine",
     "REGULAR_SESSION_END",
     "REGULAR_SESSION_START",
     "SidewaysBehavior",

@@ -2,7 +2,7 @@
 
 FMS is a local Python project for building a realistic, deterministic U.S. stock market data simulator. The project will eventually generate simulated prices, quotes, ticks, volume, volatility, candles, and real-time streams that another application can consume.
 
-This repository has completed **Phase 6: Volume and Liquidity** from [Docs/DATA_ROADMAP.md](Docs/DATA_ROADMAP.md).
+This repository has completed **Phase 7: Bid, Ask, and Spread** from [Docs/DATA_ROADMAP.md](Docs/DATA_ROADMAP.md).
 
 ## Implemented Scope
 
@@ -57,7 +57,15 @@ Phase 6 adds volume and liquidity simulation:
 - A liquidity-derived volatility multiplier for smoother high-liquidity pricing and more irregular low-liquidity pricing
 - Per-symbol activity sequence numbers and deterministic reset support
 
-The project does **not** yet implement bid/ask quote generation, tick generation, candle aggregation, streaming, storage, trading, portfolios, brokerage behavior, or real-money functionality.
+Phase 7 adds top-of-book quote simulation:
+
+- Seeded, deterministic bid and ask generation around a reference price
+- Positive spreads with bid always lower than ask
+- Smaller spreads for higher-liquidity stocks and wider spreads during higher volatility
+- Configurable base spread, tick size, volatility sensitivity, and spread variation
+- Tick-aligned quote prices without an order book or quote sizes
+
+The project does **not** yet implement quote sizes, tick generation, candle aggregation, streaming, application storage wiring, trading, portfolios, brokerage behavior, or real-money functionality.
 
 ## Project Structure
 
@@ -90,6 +98,7 @@ Detailed phase notes are available in:
 - [Docs/Phases/phase-4-price-simulation-engine.md](Docs/Phases/phase-4-price-simulation-engine.md)
 - [Docs/Phases/phase-5-market-behavior-engine.md](Docs/Phases/phase-5-market-behavior-engine.md)
 - [Docs/Phases/phase-6-volume-and-liquidity.md](Docs/Phases/phase-6-volume-and-liquidity.md)
+- [Docs/Phases/phase-7-bid-ask-and-spread.md](Docs/Phases/phase-7-bid-ask-and-spread.md)
 
 ## Notebooks
 
@@ -214,3 +223,11 @@ A **price point** is one generated price at one simulated timestamp. It is not a
 **Liquidity** describes how active and easy to trade a simulated stock is. It is configured from `0.0` to `1.0`; higher values generate more volume and a smaller price-volatility multiplier.
 
 An **activity point** is one Phase 6 observation containing interval volume, liquidity, a price-volatility multiplier, a timestamp, and a per-symbol sequence number. It intentionally does not contain bid, ask, or spread data.
+
+The **bid** is the highest simulated price currently offered by a buyer. The **ask** is the lowest simulated price currently offered by a seller. Their difference is the **spread**.
+
+A **basis point** is one hundredth of one percent. Phase 7 uses basis points to express a baseline spread relative to the stock price, then adjusts it for liquidity and volatility.
+
+A **tick size** is the smallest allowed price increment. Phase 7 defaults to one cent and rounds bids down and asks up so the quote remains valid.
+
+A **quote point** is one Phase 7 top-of-book observation containing the symbol, timestamp, bid, ask, and calculated spread. It does not include sizes or a full order book.

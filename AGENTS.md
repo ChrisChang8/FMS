@@ -14,8 +14,9 @@ This repository contains the foundation for FMS, a local Python/FastAPI U.S. sto
 - `app/api/` - API route modules. Phase 1 includes only the health endpoint.
 - `app/core/` - Core application infrastructure such as typed settings and structured logging.
 - `app/models/` - Core Pydantic market data models for stocks, quotes, ticks, candles, and market state.
-- `app/simulation/` - Simulation clock utilities, price simulation engine, and market behavior engine.
+- `app/simulation/` - Simulation clock, price, behavior, activity, and quote engines.
 - `app/simulation/activity.py` - Deterministic per-stock volume and liquidity generation.
+- `app/simulation/quotes.py` - Deterministic bid, ask, and spread generation.
 - `app/services/` - Placeholder package for future service-layer code.
 - `app/streaming/` - Placeholder package for future WebSocket and streaming code.
 - `app/storage/` - Placeholder package for future storage and replay code.
@@ -95,9 +96,18 @@ Phase 6 is implemented:
 - Phase 6 does not generate bid, ask, or spread data.
 - Detailed Phase 6 notes live in `Docs/Phases/phase-6-volume-and-liquidity.md`.
 
+Phase 7 is implemented:
+
+- `QuoteSimulationEngine` generates deterministic top-of-book bid and ask prices around a reference price.
+- `QuoteSimulationConfig` controls the seed, baseline spread, minimum tick, volatility sensitivity, and spread variation.
+- Higher liquidity narrows spreads, while higher volatility widens them.
+- Quote prices align to the configured tick size and always preserve a positive spread.
+- `QuotePoint` intentionally excludes quote sizes, tick assembly, and order-book depth.
+- Detailed Phase 7 notes live in `Docs/Phases/phase-7-bid-ask-and-spread.md`.
+
 A PostgreSQL schema for simulation sessions, stocks, market states, behaviors, quotes, ticks, and candles has been added under `migrations/` ahead of Phase 12, at the user's explicit request. The application does not yet connect to this schema (no `app/storage` wiring); it is schema scaffolding only.
 
-Do not begin Phase 7 unless the user explicitly asks for Phase 7.
+Do not begin Phase 8 unless the user explicitly asks for Phase 8.
 
 ## Common Commands
 
