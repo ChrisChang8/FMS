@@ -7,6 +7,7 @@ This repository contains the foundation for FMS, a local Python/FastAPI U.S. sto
 - `README.md` - Public-facing project overview, setup, run, and test instructions.
 - `Docs/DATA_ROADMAP.md` - Phase-by-phase market data simulator roadmap and constraints.
 - `Docs/Phases/` - Phase-specific implementation notes. Each completed phase should have one file named like `phase-N-short-title.md`.
+- `migrations/` - Plain numbered PostgreSQL migration SQL files for the mock market data and behavior schema. See `migrations/README.md` for the naming convention and how to apply them.
 - `AGENTS.md` - Agent-facing navigation and maintenance notes.
 - `pyproject.toml` - Python project metadata, dependencies, and pytest configuration.
 - `app/main.py` - FastAPI app factory and application instance.
@@ -82,6 +83,8 @@ Phase 5 is implemented:
 - Behaviors adjust drift and volatility independently without modifying the price engine.
 - Full behavior test coverage (37 tests) integrated with existing 29 tests (66 total passing).
 - Detailed Phase 5 notes live in `Docs/Phases/phase-5-market-behavior-engine.md`.
+
+A PostgreSQL schema for simulation sessions, stocks, market states, behaviors, quotes, ticks, and candles has been added under `migrations/` ahead of Phase 12, at the user's explicit request. The application does not yet connect to this schema (no `app/storage` wiring); it is schema scaffolding only.
 
 Do not begin Phase 6 unless the user explicitly asks for Phase 6.
 

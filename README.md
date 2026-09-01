@@ -66,8 +66,13 @@ app/
 tests/            Automated tests
 Docs/             Roadmap and project documentation
 Docs/Phases/      Phase-specific implementation notes
+migrations/       PostgreSQL schema migrations for mock market data and behaviors
 notebooks/        Optional VS Code/Jupyter notebooks for visualizing simulator output
 ```
+
+## Database Migrations
+
+The [migrations](migrations/) folder contains plain, numbered SQL files that create the PostgreSQL schema for storing simulation sessions, stocks, market states, behaviors, quotes, ticks, and candles. See [migrations/README.md](migrations/README.md) for how to apply them. The application does not yet connect to this schema; it is schema scaffolding ahead of Phase 12.
 
 Detailed phase notes are available in:
 
