@@ -37,6 +37,7 @@ from app.simulation.price_engine import (
     PriceSimulationConfig,
     PriceSimulationEngine,
 )
+from app.simulation.candles import CandleAggregator, SUPPORTED_CANDLE_INTERVALS
 from app.simulation.quotes import QuotePoint, QuoteSimulationConfig, QuoteSimulationEngine
 from app.simulation.ticks import TickSimulationConfig, TickSimulationEngine
 
@@ -44,6 +45,7 @@ __all__ = [
     "ActivityPoint",
     "ActivitySimulationConfig",
     "BehaviorType",
+    "CandleAggregator",
     "BreakdownBehavior",
     "BreakoutBehavior",
     "ConsolidationBehavior",
@@ -70,6 +72,7 @@ __all__ = [
     "SimulationClock",
     "SimulationClockConfig",
     "StockActivityConfig",
+    "SUPPORTED_CANDLE_INTERVALS",
     "TickSimulationConfig",
     "TickSimulationEngine",
     "UptrendBehavior",

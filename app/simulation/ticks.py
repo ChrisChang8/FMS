@@ -63,6 +63,14 @@ class TickSimulationEngine:
         """Create and add a behavior beginning at the supplied simulated time."""
         self._behavior_engine.add_behavior_from_config(config, current_time)
 
+    def replace_behavior_from_config(
+        self, config: MarketBehaviorConfig | None, *, symbol: str, current_time: datetime
+    ) -> None:
+        """Replace controls-managed behaviors for one symbol."""
+        self._behavior_engine.clear_symbol(symbol)
+        if config is not None:
+            self.add_behavior_from_config(config, current_time=current_time)
+
     def reset(self) -> None:
         """Restore all component random streams and tick ordering state."""
         self._price_engine.reset()

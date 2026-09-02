@@ -18,8 +18,9 @@ This repository contains the foundation for FMS, a local Python/FastAPI U.S. sto
 - `app/simulation/activity.py` - Deterministic per-stock volume and liquidity generation.
 - `app/simulation/quotes.py` - Deterministic bid, ask, and spread generation.
 - `app/simulation/ticks.py` - Deterministic composition of complete raw market ticks.
-- `app/services/` - Placeholder package for future service-layer code.
-- `app/streaming/` - Placeholder package for future WebSocket and streaming code.
+- `app/services/simulation.py` - Shared in-memory runtime, lifecycle, history, and factor controls.
+- `app/streaming/market.py` - Filterable WebSocket market event stream.
+- `app/static/` - Dependency-free local market simulation dashboard.
 - `app/storage/` - Placeholder package for future storage and replay code.
 - `tests/` - pytest suite covering the health endpoint, market data models, and simulation clock.
 
@@ -116,9 +117,29 @@ Phase 8 is implemented:
 - A master seed and full reset reproduce the complete tick stream.
 - Detailed Phase 8 notes live in `Docs/Phases/phase-8-tick-generation.md`.
 
+Phase 9 is implemented:
+
+- `CandleAggregator` derives `1s` and `1m` OHLCV candles exclusively from ticks.
+- Per-symbol and per-interval in-progress state, completed-candle emission, snapshots, ordering checks, and reset are supported.
+- Detailed Phase 9 notes live in `Docs/Phases/phase-9-candle-aggregation.md`.
+
+Phase 10 is implemented:
+
+- `SimulationService` owns the clock, engines, factor settings, latest quotes, and bounded in-memory tick/candle histories.
+- REST endpoints expose stocks, quotes, ticks, candles, lifecycle actions, status, and selected-stock factor controls.
+- The producer advances by deterministic 250-millisecond simulated steps and is managed by FastAPI lifespan.
+- Detailed Phase 10 notes live in `Docs/Phases/phase-10-market-data-api.md`.
+
+Phase 11 is implemented:
+
+- `WS /ws/market` broadcasts typed tick, quote, candle, and status envelopes with symbol/channel filtering.
+- Bounded subscriber queues prevent slow clients from blocking tick production.
+- `/` serves a responsive vanilla HTML/CSS/JavaScript dashboard for visualization and simulation controls.
+- Detailed Phase 11 notes live in `Docs/Phases/phase-11-real-time-streaming.md`.
+
 A PostgreSQL schema for simulation sessions, stocks, market states, behaviors, quotes, ticks, and candles has been added under `migrations/` ahead of Phase 12, at the user's explicit request. The application does not yet connect to this schema (no `app/storage` wiring); it is schema scaffolding only.
 
-Do not begin Phase 9 unless the user explicitly asks for Phase 9.
+Do not begin Phase 12 unless the user explicitly asks for Phase 12.
 
 ## Common Commands
 

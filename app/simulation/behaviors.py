@@ -319,6 +319,10 @@ class MarketBehaviorEngine:
             if not self._behaviors[symbol]:
                 del self._behaviors[symbol]
 
+    def clear_symbol(self, symbol: str) -> None:
+        """Remove every configured behavior for one symbol."""
+        self._behaviors.pop(symbol.strip().upper(), None)
+
     def get_active_behaviors(self, symbol: str, current_time: datetime) -> list[MarketBehavior]:
         """Get all active behaviors for a symbol.
         

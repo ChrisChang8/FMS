@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FMS Market Simulator</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    .behavior-info:hover .tip,.behavior-info:focus .tip{display:none}
+    .behavior-info[aria-expanded="true"] .tip{display:grid}
+  </style>
+</head>
+<body>
+  <header><div><span class="eyebrow">LOCAL MARKET DATA</span><h1>FMS Simulator</h1></div><div class="connection"><i id="connectionDot"></i><span id="connectionText">Connecting</span></div></header>
+  <main>
+    <section class="toolbar panel">
+      <label>Symbol<select id="symbol"></select></label>
+      <div class="market-clock"><span>SIMULATED TIME</span><strong id="clock">—</strong></div>
+      <div class="actions"><button id="start">Start</button><button id="pause" class="secondary">Pause</button><button id="reset" class="danger">Reset</button></div>
+    </section>
+    <section class="quote-grid">
+      <article class="panel hero"><span class="quote-label">LAST PRICE <button type="button" class="info" aria-label="About last price">i<span class="tip"><b>Last price</b> is the price of the most recent simulated trade.<em>Higher:</em> the latest trade happened at a higher price.<em>Lower:</em> the latest trade happened at a lower price. It must remain between the bid and ask.</span></button></span><strong id="price">—</strong><small id="company">—</small></article>
+      <article class="panel"><span class="quote-label">BID <button type="button" class="info" aria-label="About bid">i<span class="tip"><b>Bid</b> is the highest price a simulated buyer currently offers.<em>Higher bid:</em> buyers are willing to pay more.<em>Lower bid:</em> buyers are offering less.</span></button></span><strong id="bid">—</strong><small id="bidSize">— shares</small></article>
+      <article class="panel"><span class="quote-label">ASK <button type="button" class="info" aria-label="About ask">i<span class="tip"><b>Ask</b> is the lowest price a simulated seller currently accepts.<em>Higher ask:</em> sellers want more.<em>Lower ask:</em> sellers will sell for less.</span></button></span><strong id="ask">—</strong><small id="askSize">— shares</small></article>
+      <article class="panel"><span class="quote-label">SPREAD <button type="button" class="info" aria-label="About spread">i<span class="tip"><b>Spread</b> is the ask minus the bid—the gap between sellers and buyers.<em>Wider:</em> usually less liquidity or more uncertainty.<em>Narrower:</em> usually more liquidity and easier trading.</span></button></span><strong id="spread">—</strong><small id="marketState">PAUSED</small></article>
+    </section>
+    <section class="workspace">
+      <article class="panel chart-panel"><div class="panel-head"><div><span>LIVE PRICE</span><h2 id="chartTitle">—</h2></div><div class="chart-current"><span>CURRENT</span><strong id="chartPrice">—</strong></div><div class="tabs"><button data-interval="1s" class="active">1s</button><button data-interval="1m">1m</button></div></div><canvas id="chart" aria-label="Price over simulated time"></canvas></article>
+      <aside class="panel controls"><div class="panel-head"><div><span>SELECTED STOCK</span><h2>Market factors</h2></div></div>
+        <label><span class="factor-name">Liquidity <button type="button" class="info" aria-label="About liquidity">i<span class="tip relationship-tip"><b>Liquidity</b> means how easily shares can trade without moving the price very much.<em>Increase:</em> tighter spreads, larger quotes, smoother prices, and usually more volume.<em>Decrease:</em> wider spreads, smaller quotes, and more irregular prices.<span><strong>Related, but different:</strong> liquidity is how easy trading is; volume is how much trading happens. Keeping both allows active thin markets and quiet liquid markets.</span><span><strong>Examples:</strong><br>High liquidity + high volume = active and orderly.<br>High liquidity + low volume = quiet with good pricing.<br>Low liquidity + high volume = busy but rough and costly.<br>Low liquidity + low volume = inactive and hard to trade.</span></span></button></span><output id="liquidityValue">0.50</output><input id="liquidity" type="range" min="0" max="1" step="0.05" value="0.5"></label>
+        <label><span class="factor-name">Volume <button type="button" class="info" aria-label="About volume">i<span class="tip relationship-tip"><b>Volume (trading activity)</b> means how many shares actually trade during a period.<em>Increase:</em> more shares trade on each simulated tick.<em>Decrease:</em> fewer shares trade.<span><strong>Related, but different:</strong> volume measures how much trading happens; liquidity measures how easily it happens. Two stocks can have the same volume but different spreads and price impact.</span><span>FMS keeps both controls so you can simulate a quiet but liquid market (low volume, high liquidity) or a busy thin market (high volume, low liquidity).</span></span></button></span><output id="volumeValue">1.00×</output><input id="volume" type="range" min="0.1" max="3" step="0.1" value="1"></label>
+        <label><span class="factor-name">Volatility <button type="button" class="info" aria-label="About volatility">i<span class="tip"><b>Volatility</b> controls how strongly prices move.<em>Increase:</em> larger price swings and usually wider spreads.<em>Decrease:</em> smaller, steadier price changes.</span></button></span><output id="volatilityValue">1.00×</output><input id="volatility" type="range" min="0.25" max="3" step="0.05" value="1"></label>
+        <label><span class="factor-name">Behavior <button type="button" class="info behavior-info" aria-label="About all market behaviors">i<span class="tip behavior-tip"><b>Market behaviors</b><span><strong>Normal</strong> — ordinary movement with the stock's base settings.</span><span><strong>Uptrend</strong> — adds steady upward pressure.</span><span><strong>Downtrend</strong> — adds steady downward pressure.</span><span><strong>Sideways</strong> — reduces direction and keeps movement flatter.</span><span><strong>Momentum</strong> — strengthens continued directional movement.</span><span><strong>Mean reversion</strong> — encourages price to pull back toward its typical level.</span><span><strong>Breakout</strong> — creates a stronger upward move with extra activity.</span><span><strong>Breakdown</strong> — creates a stronger downward move with extra activity.</span><span><strong>Consolidation</strong> — compresses movement into a tighter range.</span><span><strong>Volatility spike</strong> — sharply increases the size of price swings.</span><em>Strength controls how strongly the selected behavior is applied for 30 simulated minutes.</em></span></button></span><select id="behavior"><option value="normal">Normal</option><option value="uptrend">Uptrend</option><option value="downtrend">Downtrend</option><option value="sideways">Sideways</option><option value="momentum">Momentum</option><option value="mean_reversion">Mean reversion</option><option value="breakout">Breakout</option><option value="breakdown">Breakdown</option><option value="consolidation">Consolidation</option><option value="volatility_spike">Volatility spike</option></select></label>
+        <label><span class="factor-name">Behavior strength <button type="button" class="info" aria-label="About behavior strength">i<span class="tip"><b>Behavior strength</b> controls how strongly the selected pattern affects the stock.<em>Increase:</em> makes the effect stronger.<em>Decrease:</em> weakens it; negative values can reverse directional effects.</span></button></span><output id="strengthValue">0.50</output><input id="strength" type="range" min="-1" max="1" step="0.1" value="0.5"></label>
+        <p id="factorMessage">Changes apply to subsequent ticks.</p>
+      </aside>
+    </section>
+    <section class="panel tape"><div class="panel-head"><div><span>MARKET TAPE</span><h2>Recent ticks</h2></div></div><div class="table-wrap"><table><thead><tr><th>Time</th><th>Price</th><th>Bid</th><th>Ask</th><th>Volume</th><th>Sequence</th></tr></thead><tbody id="ticks"></tbody></table></div></section>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>

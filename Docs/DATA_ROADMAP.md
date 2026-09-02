@@ -8,7 +8,7 @@ This project is only responsible for generating realistic simulated market data.
 
 Do not build:
 
-- Frontend interfaces
+- Frontend interfaces, except the explicitly requested local Phase 11 simulator-control dashboard
 - Paper trading
 - Order placement
 - Portfolios

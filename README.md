@@ -2,7 +2,7 @@
 
 FMS is a local Python project for building a realistic, deterministic U.S. stock market data simulator. The project will eventually generate simulated prices, quotes, ticks, volume, volatility, candles, and real-time streams that another application can consume.
 
-This repository has completed **Phase 8: Tick Generation** from [Docs/DATA_ROADMAP.md](Docs/DATA_ROADMAP.md).
+This repository has completed **Phase 11: Real-Time Streaming** from [Docs/DATA_ROADMAP.md](Docs/DATA_ROADMAP.md), including a local simulation dashboard.
 
 ## Implemented Scope
 
@@ -75,7 +75,9 @@ Phase 8 adds continuous raw tick generation:
 - Complete deterministic replay from the same seed and inputs
 - Reset support for every component random stream and ordering state
 
-The project does **not** yet implement candle aggregation, APIs for market data, WebSocket streaming, application storage wiring, trading, portfolios, brokerage behavior, or real-money functionality.
+Phase 9 adds tick-derived `1s` and `1m` OHLCV candle aggregation. Phase 10 adds a shared in-memory simulation runtime, bounded histories, lifecycle controls, market-data REST endpoints, and per-stock factor controls. Phase 11 adds filtered WebSocket streaming and a responsive, dependency-free dashboard.
+
+The project does **not** implement application storage wiring, historical replay, trading, portfolios, brokerage behavior, authentication, or real-money functionality.
 
 ## Project Structure
 
@@ -84,10 +86,11 @@ app/
     api/          FastAPI route modules
     core/         Configuration and logging
     models/       Pydantic market data models
-    services/     Future application services
+    services/     Shared in-memory simulation runtime
     simulation/   Clock, behavior, price, activity, quote, and tick engines
     storage/      Future storage and replay support
-    streaming/    Future real-time streaming support
+    streaming/    WebSocket market-data transport
+    static/       Local simulator dashboard
 
 tests/            Automated tests
 Docs/             Roadmap and project documentation
@@ -110,6 +113,9 @@ Detailed phase notes are available in:
 - [Docs/Phases/phase-6-volume-and-liquidity.md](Docs/Phases/phase-6-volume-and-liquidity.md)
 - [Docs/Phases/phase-7-bid-ask-and-spread.md](Docs/Phases/phase-7-bid-ask-and-spread.md)
 - [Docs/Phases/phase-8-tick-generation.md](Docs/Phases/phase-8-tick-generation.md)
+- [Docs/Phases/phase-9-candle-aggregation.md](Docs/Phases/phase-9-candle-aggregation.md)
+- [Docs/Phases/phase-10-market-data-api.md](Docs/Phases/phase-10-market-data-api.md)
+- [Docs/Phases/phase-11-real-time-streaming.md](Docs/Phases/phase-11-real-time-streaming.md)
 
 ## Notebooks
 
@@ -142,7 +148,15 @@ Start the FastAPI development server:
 python -m uvicorn app.main:app --reload
 ```
 
-Then open:
+Then open the dashboard:
+
+```text
+http://127.0.0.1:8000/
+```
+
+The dashboard can start, pause, and reset the simulation. Its liquidity, volume, volatility, behavior, and strength controls apply to the selected stock's subsequent ticks.
+
+The health endpoint remains available at:
 
 ```text
 http://127.0.0.1:8000/health
@@ -158,6 +172,18 @@ Expected response:
 }
 ```
 
+## Market Data Interfaces
+
+REST endpoints provide stocks, latest quotes, bounded tick/candle history, simulation status and lifecycle controls, and per-stock factor updates. Interactive API documentation is available at `http://127.0.0.1:8000/docs`.
+
+Live events are available at `ws://127.0.0.1:8000/ws/market`. Optional comma-separated `symbols` and `channels` parameters filter the stream, for example:
+
+```text
+ws://127.0.0.1:8000/ws/market?symbols=AAPL,MSFT&channels=tick,candle
+```
+
+Runtime data is held only in memory. Run a single application worker so HTTP and WebSocket clients share the same simulation state.
+
 ## Run Tests
 
 ```powershell
@@ -169,6 +195,37 @@ If you are using the local virtual environment in this checkout:
 ```powershell
 .\.venv\Scripts\python.exe -m pytest
 ```
+
+## Troubleshooting
+
+### Windows socket error on startup
+
+If Uvicorn reports `[WinError 10013]` or says only one use of a socket address is permitted, another process may still be listening on port 8000. Find its process ID:
+
+```powershell
+netstat -ano | Select-String ':8000'
+```
+
+The final column is the PID. Confirm the process before stopping it:
+
+```powershell
+Get-Process -Id <PID>
+```
+
+If it is a leftover FMS/Uvicorn Python process, stop it and restart FMS:
+
+```powershell
+Stop-Process -Id <PID> -Force
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload
+```
+
+Alternatively, use another available port:
+
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8001
+```
+
+Then open `http://127.0.0.1:8001/`.
 
 ## Configuration
 
