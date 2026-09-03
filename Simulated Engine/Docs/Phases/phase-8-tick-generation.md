@@ -104,7 +104,7 @@ The Phase 8 tests verify:
 Run the complete suite with:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pytest
+..\.venv\Scripts\python.exe -m pytest
 ```
 
 At Phase 8 completion, the suite contains 102 passing tests.

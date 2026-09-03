@@ -103,22 +103,22 @@ The health endpoint only confirms the application foundation is working. It does
 
 ## How To Set Up The Project
 
-From the repository root:
+From the `Simulated Engine` directory:
 
 ```powershell
-cd C:\Users\chris\Downloads\Github\FMS
+cd "Simulated Engine"
 ```
 
 Create a virtual environment if one does not already exist:
 
 ```powershell
-python -m venv .venv
+python -m venv ../.venv
 ```
 
 Activate it:
 
 ```powershell
-.\.venv\Scripts\Activate.ps1
+..\.venv\Scripts\Activate.ps1
 ```
 
 Install the project with development dependencies:
@@ -129,7 +129,7 @@ python -m pip install -e ".[dev]"
 
 ## How To Run The Application
 
-From the repository root, with dependencies installed:
+From the `Simulated Engine` directory, with dependencies installed:
 
 ```powershell
 python -m uvicorn app.main:app --reload

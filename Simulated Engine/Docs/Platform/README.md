@@ -252,21 +252,23 @@ erDiagram
 
 ## Running the build
 
+Run these commands from the `Simulated Engine` directory.
+
 The script requires PostgreSQL with the `pgcrypto` extension available.
 
 PowerShell:
 
 ```powershell
-psql $env:DATABASE_URL -v ON_ERROR_STOP=1 -f "Platform/Trading Platform Schema.sql"
+psql $env:DATABASE_URL -v ON_ERROR_STOP=1 -f "Docs/Platform/Trading Platform Schema.sql"
 ```
 
 Bash:
 
 ```bash
-psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "Platform/Trading Platform Schema.sql"
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "Docs/Platform/Trading Platform Schema.sql"
 ```
 
-Because this is a destructive bootstrap build, use the numbered files under [`../migrations`](../migrations/) for incremental FMS schema changes.
+Because this is a destructive bootstrap build, use the numbered files under [`../../migrations`](../../migrations/) for incremental FMS schema changes.
 
 ## Important assumptions
 

@@ -11,6 +11,8 @@ up-only (no rollback script) and contains one logical schema change.
 
 ## Applying migrations
 
+Run these commands from the `Simulated Engine` directory.
+
 Requires a reachable PostgreSQL database and `psql` on `PATH`. Set
 `DATABASE_URL` (or any `psql`-compatible connection string) first.
 

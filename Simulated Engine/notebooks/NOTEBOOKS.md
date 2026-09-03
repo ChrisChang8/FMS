@@ -58,22 +58,22 @@ The notebook averages 30 deterministic runs for each scenario. This keeps the se
 
 ## Recommended Setup
 
-From the repository root:
+From the repository root, enter the simulator directory:
 
 ```powershell
-cd C:\Users\chris\Downloads\Github\FMS
+cd "Simulated Engine"
 ```
 
 Create a virtual environment if needed:
 
 ```powershell
-python -m venv .venv
+python -m venv ../.venv
 ```
 
 Activate it:
 
 ```powershell
-.\.venv\Scripts\Activate.ps1
+..\.venv\Scripts\Activate.ps1
 ```
 
 Install the project with development dependencies:

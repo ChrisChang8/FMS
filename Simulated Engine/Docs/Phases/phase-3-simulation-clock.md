@@ -97,22 +97,22 @@ This is useful for tests because the result does not depend on real time passing
 
 ## How To Set Up The Project
 
-From the repository root:
+From the `Simulated Engine` directory:
 
 ```powershell
-cd C:\Users\chris\Downloads\Github\FMS
+cd "Simulated Engine"
 ```
 
 Create a virtual environment if one does not already exist:
 
 ```powershell
-python -m venv .venv
+python -m venv ../.venv
 ```
 
 Activate it:
 
 ```powershell
-.\.venv\Scripts\Activate.ps1
+..\.venv\Scripts\Activate.ps1
 ```
 
 Install the project with development dependencies:
@@ -125,7 +125,7 @@ python -m pip install -e ".[dev]"
 
 ## How To Run All Tests
 
-From the repository root, with the virtual environment activated:
+From the `Simulated Engine` directory, with the virtual environment activated:
 
 ```powershell
 python -m pytest
@@ -134,7 +134,7 @@ python -m pytest
 Or run pytest directly through the local virtual environment:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pytest
+..\.venv\Scripts\python.exe -m pytest
 ```
 
 Expected result:
@@ -150,13 +150,13 @@ The exact runtime may vary. A pytest cache warning does not necessarily mean the
 Run just the simulation clock tests:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pytest tests\test_simulation_clock.py
+..\.venv\Scripts\python.exe -m pytest tests\test_simulation_clock.py
 ```
 
 Run one specific test by name:
 
 ```powershell
-.\.venv\Scripts\python.exe -m pytest tests\test_simulation_clock.py -k pause
+..\.venv\Scripts\python.exe -m pytest tests\test_simulation_clock.py -k pause
 ```
 
 The `-k pause` option tells pytest to run only tests with `pause` in the test name.
@@ -168,7 +168,7 @@ Phase 3 does not add any new API endpoints. The existing health endpoint from Ph
 Start the app:
 
 ```powershell
-.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload
+..\.venv\Scripts\python.exe -m uvicorn app.main:app --reload
 ```
 
 Then open:
