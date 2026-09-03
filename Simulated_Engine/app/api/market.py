@@ -1,5 +1,6 @@
-"""REST endpoints for market data and simulation controls."""
+"""REST endpoints for live and historical market data."""
 
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
 from app.services.simulation import SimulationService, StockFactors
@@ -80,3 +81,68 @@ async def factors(symbol: str, body: StockFactors, service: SimulationService = 
     normalized = require_symbol(service, symbol)
     updated = await service.update_factors(normalized, body)
     return updated.model_dump(mode="json")
+
+
+def _session_json(session) -> dict:
+    return {**session.model_dump(mode="json"), "replay_complete": session.replay_complete}
+
+
+@router.get("/simulation/sessions")
+async def sessions(
+    before_id: int | None = Query(None, ge=1),
+    limit: int = Query(50, ge=1),
+    service: SimulationService = Depends(get_service),
+) -> list[dict]:
+    if limit > service.history_page_limit:
+        raise HTTPException(status_code=422, detail=f"limit must be <= {service.history_page_limit}")
+    return [_session_json(item) for item in await service.storage.list_sessions(before_id=before_id, limit=limit)]
+
+
+@router.get("/simulation/sessions/{session_id}")
+async def session(session_id: int, service: SimulationService = Depends(get_service)) -> dict:
+    found = await service.storage.get_session(session_id)
+    if found is None:
+        raise HTTPException(status_code=404, detail="Unknown simulation session")
+    return _session_json(found)
+
+
+@router.get("/simulation/sessions/{session_id}/ticks")
+async def historical_ticks(
+    session_id: int,
+    symbol: str | None = Query(None),
+    after_sequence: int = Query(0, ge=0),
+    limit: int = Query(100, ge=1),
+    service: SimulationService = Depends(get_service),
+) -> list[dict]:
+    if await service.storage.get_session(session_id) is None:
+        raise HTTPException(status_code=404, detail="Unknown simulation session")
+    if limit > service.history_page_limit:
+        raise HTTPException(status_code=422, detail=f"limit must be <= {service.history_page_limit}")
+    normalized = require_symbol(service, symbol) if symbol else None
+    rows = await service.storage.read_ticks(
+        session_id, symbol=normalized, after_sequence=after_sequence, limit=limit
+    )
+    return [item.model_dump(mode="json") for item in rows]
+
+
+@router.get("/simulation/sessions/{session_id}/candles")
+async def historical_candles(
+    session_id: int,
+    symbol: str | None = Query(None),
+    interval: str | None = Query(None),
+    after_timestamp: datetime | None = Query(None),
+    limit: int = Query(100, ge=1),
+    service: SimulationService = Depends(get_service),
+) -> list[dict]:
+    if await service.storage.get_session(session_id) is None:
+        raise HTTPException(status_code=404, detail="Unknown simulation session")
+    if limit > service.history_page_limit:
+        raise HTTPException(status_code=422, detail=f"limit must be <= {service.history_page_limit}")
+    normalized = require_symbol(service, symbol) if symbol else None
+    if interval is not None and interval not in SUPPORTED_CANDLE_INTERVALS:
+        raise HTTPException(status_code=422, detail="interval must be one of: 1s, 1m")
+    rows = await service.storage.read_candles(
+        session_id, symbol=normalized, interval=interval,
+        after_timestamp=after_timestamp, limit=limit,
+    )
+    return [item.model_dump(mode="json") for item in rows]

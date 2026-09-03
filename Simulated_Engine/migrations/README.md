@@ -134,7 +134,7 @@ the highest-volume table.
 | `bid` / `ask` | The prevailing bid/ask at the moment of this trade. |
 | `bid_size` / `ask_size` | Shares available at the bid/ask at the moment of this trade. |
 | `trade_volume` | Number of shares traded in this single tick. |
-| `sequence_number` | Increasing counter per `(session_id, symbol)` used to verify tick ordering. |
+| `sequence_number` | Globally increasing counter within a session used for deterministic replay ordering. |
 
 ### `candles`
 

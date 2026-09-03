@@ -1,6 +1,6 @@
 # Agent Notes
 
-All paths and commands below are relative to `Simulated Engine/` unless stated otherwise. From the repository root, run `cd "Simulated Engine"` first. Activate the shared environment with `..\.venv\Scripts\Activate.ps1`.
+All paths and commands below are relative to `Simulated_Engine/` unless stated otherwise. From the repository root, run `cd Simulated_Engine` first. Activate the shared environment with `..\.venv\Scripts\Activate.ps1`.
 
 This repository contains the foundation for FMS, a local Python/FastAPI U.S. stock market data simulator. Future Codex agents should use this file as the starting point for orientation, then read the roadmap before making phase-specific changes.
 
@@ -10,6 +10,7 @@ This repository contains the foundation for FMS, a local Python/FastAPI U.S. sto
 - `Docs/DATA_ROADMAP.md` - Phase-by-phase market data simulator roadmap and constraints.
 - `Docs/Phases/` - Phase-specific implementation notes. Each completed phase should have one file named like `phase-N-short-title.md`.
 - `migrations/` - Plain numbered PostgreSQL migration SQL files for the mock market data and behavior schema. See `migrations/README.md` for the naming convention and how to apply them.
+- `Platform/` - Consolidated destructive PostgreSQL bootstrap schema and database design notes for the broader trading platform. It includes simulation lifecycle metadata, centralized operational diagnostics, and query-focused indexes; incremental simulator changes still belong in `migrations/`.
 - `AGENTS.md` - Agent-facing navigation and maintenance notes.
 - `pyproject.toml` - Python project metadata, dependencies, and pytest configuration.
 - `app/main.py` - FastAPI app factory and application instance.
@@ -140,9 +141,15 @@ Phase 11 is implemented:
 - `/` serves a responsive vanilla HTML/CSS/JavaScript dashboard for visualization and simulation controls.
 - Detailed Phase 11 notes live in `Docs/Phases/phase-11-real-time-streaming.md`.
 
-A PostgreSQL schema for simulation sessions, stocks, market states, behaviors, quotes, ticks, and candles has been added under `migrations/` ahead of Phase 12, at the user's explicit request. The application does not yet connect to this schema (no `app/storage` wiring); it is schema scaffolding only.
+Phase 12 is implemented:
 
-Do not begin Phase 12 unless the user explicitly asks for Phase 12.
+- Live events publish from memory before ordered batches persist asynchronously.
+- PostgreSQL storage is enabled by `FMS_DATABASE_URL`; database-free runs use the in-memory adapter.
+- A bounded persistence queue pauses generation under sustained backpressure.
+- Historical session/tick/candle REST APIs and `WS /ws/replay/{session_id}` expose stored data.
+- The dashboard supports Live, Historical, and Replay modes.
+- Incremental migration `0009_phase_12_persistence.sql` aligns lifecycle and replay constraints.
+- Detailed Phase 12 notes live in `Docs/Phases/phase-12-live-persistence-history-and-replay.md`.
 
 ## Common Commands
 

@@ -2,7 +2,7 @@
 
 FMS is a local Python project for building a realistic, deterministic U.S. stock market data simulator. The project will eventually generate simulated prices, quotes, ticks, volume, volatility, candles, and real-time streams that another application can consume.
 
-This repository has completed **Phase 11: Real-Time Streaming** from [Docs/DATA_ROADMAP.md](Docs/DATA_ROADMAP.md), including a local simulation dashboard.
+This repository has completed **Phase 12: Live Persistence, Historical Charts, and Replay** from [Docs/DATA_ROADMAP.md](Docs/DATA_ROADMAP.md).
 
 ## Implemented Scope
 
@@ -75,9 +75,9 @@ Phase 8 adds continuous raw tick generation:
 - Complete deterministic replay from the same seed and inputs
 - Reset support for every component random stream and ordering state
 
-Phase 9 adds tick-derived `1s` and `1m` OHLCV candle aggregation. Phase 10 adds a shared in-memory simulation runtime, bounded histories, lifecycle controls, market-data REST endpoints, and per-stock factor controls. Phase 11 adds filtered WebSocket streaming and a responsive, dependency-free dashboard.
+Phase 9 adds tick-derived `1s` and `1m` OHLCV candle aggregation. Phase 10 adds a shared in-memory simulation runtime, bounded histories, lifecycle controls, market-data REST endpoints, and per-stock factor controls. Phase 11 adds filtered WebSocket streaming and a responsive, dependency-free dashboard. Phase 12 adds asynchronous PostgreSQL persistence, session history APIs, replay streaming, backpressure, and dashboard modes for live, historical, and replay views.
 
-The project does **not** implement application storage wiring, historical replay, trading, portfolios, brokerage behavior, authentication, or real-money functionality.
+The project does **not** implement trading, portfolios, brokerage behavior, authentication, or real-money functionality.
 
 ## Project Structure
 
@@ -101,7 +101,9 @@ notebooks/        Optional VS Code/Jupyter notebooks for visualizing simulator o
 
 ## Database Migrations
 
-The [migrations](migrations/) folder contains plain, numbered SQL files that create the PostgreSQL schema for storing simulation sessions, stocks, market states, behaviors, quotes, ticks, and candles. See [migrations/README.md](migrations/README.md) for how to apply them. The application does not yet connect to this schema; it is schema scaffolding ahead of Phase 12.
+The [migrations](migrations/) folder contains plain, numbered SQL files that create the PostgreSQL schema for storing simulation sessions, stocks, market states, behaviors, quotes, ticks, and candles. See [migrations/README.md](migrations/README.md) for how to apply them. Set `FMS_DATABASE_URL` to enable durable PostgreSQL storage; without it, the application uses an in-memory adapter for local development and tests.
+
+The consolidated [trading platform schema](Platform/Trading%20Platform%20Schema.sql) builds on that simulator model with versioned simulation lifecycle metadata, globally ordered tick replay, idempotent quote identity, centralized operational diagnostics, and query-focused indexes. Its accompanying [database guide](Platform/README.md) documents the schema and the decision to defer Redis until measured access patterns require shared caching.
 
 Detailed phase notes are available in:
 
@@ -116,6 +118,7 @@ Detailed phase notes are available in:
 - [Docs/Phases/phase-9-candle-aggregation.md](Docs/Phases/phase-9-candle-aggregation.md)
 - [Docs/Phases/phase-10-market-data-api.md](Docs/Phases/phase-10-market-data-api.md)
 - [Docs/Phases/phase-11-real-time-streaming.md](Docs/Phases/phase-11-real-time-streaming.md)
+- [Docs/Phases/phase-12-live-persistence-history-and-replay.md](Docs/Phases/phase-12-live-persistence-history-and-replay.md)
 
 ## Notebooks
 
@@ -130,7 +133,7 @@ Notebook-specific instructions live in [notebooks/NOTEBOOKS.md](notebooks/NOTEBO
 From the repository root, enter this project first. All commands below run from this directory and use the shared root virtual environment:
 
 ```powershell
-cd "Simulated Engine"
+cd Simulated_Engine
 ```
 
 Create and activate a virtual environment:
@@ -161,6 +164,12 @@ http://127.0.0.1:8000/
 ```
 
 The dashboard can start, pause, and reset the simulation. Its liquidity, volume, volatility, behavior, and strength controls apply to the selected stock's subsequent ticks.
+
+To record sessions durably, apply migrations `0001` through `0009` and set a PostgreSQL connection string before starting the application:
+
+```powershell
+$env:FMS_DATABASE_URL = "postgresql://user:password@localhost/fms"
+```
 
 The health endpoint remains available at:
 
