@@ -6,7 +6,7 @@ only** — no users, accounts, orders, fills, or instruments are seeded.
 
 ## What it produces
 
-Running [`../notebooks/seed_data_generation.ipynb`](../notebooks/seed_data_generation.ipynb)
+Running [`seed_data_generation.ipynb`](seed_data_generation.ipynb)
 reuses the existing simulation engines (`TickSimulationEngine`,
 `CandleAggregator`, `MarketBehaviorEngine`) with a fixed seed to generate:
 
@@ -20,7 +20,7 @@ reuses the existing simulation engines (`TickSimulationEngine`,
 - `candles` rows for the `1s` and `1m` intervals
 
 The notebook writes the result to
-[`../migrations/seed_mock_market_data.sql`](../migrations/seed_mock_market_data.sql)
+[`../../migrations/seed_mock_market_data.sql`](../../migrations/seed_mock_market_data.sql)
 as plain `INSERT` statements wrapped in a transaction, matching the tables
 defined in `migrations/0001`-`0009` and mirrored in
 `Platform/Trading Platform Schema.sql`.
